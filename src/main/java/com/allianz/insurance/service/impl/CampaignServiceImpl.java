@@ -94,7 +94,7 @@ public class CampaignServiceImpl implements CampaignService {
         Optional.of(campaign)
                 .filter(c -> c.getCampaignStatus().equals(CampaignStatus.ACTIVE) || c.getCampaignStatus().equals(CampaignStatus.WAITING_FOR_APPROVAL))
                 .map(c -> {
-                    c.setCampaignStatus(CampaignStatus.DEACTIVATED);
+                    c.setCampaignStatus(CampaignStatus.DEACTIVATE);
                     c.setUpdatedBy(userEmail);
                     return c;
                 })
