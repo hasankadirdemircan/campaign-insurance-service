@@ -15,10 +15,13 @@ import com.allianz.insurance.service.CampaignService;
 import com.allianz.insurance.util.Mapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Base64;
 import java.util.List;
@@ -26,6 +29,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @Transactional
 public class CampaignServiceImpl implements CampaignService {
@@ -41,6 +45,7 @@ public class CampaignServiceImpl implements CampaignService {
 
     @Override
     public CampaignResponse createCampaign(String jwt, CreateCampaignRequest request) {
+        Instant start = Instant.now();
         String userEmail = getEmailInJwt(jwt);
         Campaign campaignModel = mapper.createCampaignRequestToModel(userEmail, request);
         Campaign campaignExist = campaignRepository.findCampaignByCampaignCategoryAndAdvertTitleAndCampaignDetail(
@@ -54,11 +59,14 @@ public class CampaignServiceImpl implements CampaignService {
 
         Campaign savedCampaign = campaignRepository.save(saveCampaign);
         saveCampaignHistory(userEmail, savedCampaign);
+        Instant end = Instant.now();
+        durationLog(start, end, "createCampaign");
        return buildCampaignToCampaignResponse(savedCampaign);
     }
 
     @Override
     public CampaignResponse activateCampaign(String jwt, Long campaignID) {
+        Instant start = Instant.now();
         String userEmail = getEmailInJwt(jwt);
         Campaign campaign = campaignRepository.findCampaignById(campaignID);
         Optional.ofNullable(campaign)
@@ -70,11 +78,14 @@ public class CampaignServiceImpl implements CampaignService {
                 })
                 .orElseThrow(() -> new IllegalArgumentException("You can not update the campaign"));
         saveCampaignHistory(userEmail, campaign);
+        Instant end = Instant.now();
+        durationLog(start, end, "activateCampaign");
         return buildCampaignToCampaignResponse(campaign);
     }
 
     @Override
     public CampaignResponse deactivateCampaign(String jwt, Long campaignID) {
+        Instant start = Instant.now();
         String userEmail = getEmailInJwt(jwt);
         Campaign campaign = campaignRepository.findCampaignById(campaignID);
         Optional.ofNullable(campaign)
@@ -86,15 +97,23 @@ public class CampaignServiceImpl implements CampaignService {
                 })
                 .orElseThrow(() -> new IllegalArgumentException("You can not update the campaign"));
         saveCampaignHistory(userEmail, campaign);
+        Instant end = Instant.now();
+        durationLog(start, end, "deactivateCampaign");
         return buildCampaignToCampaignResponse(campaign);
     }
 
     @Override
     public CampaignResponse findCampaignById(String jwt, Long campaignID) {
+        Instant start = Instant.now();
         Campaign campaign = campaignRepository.findCampaignById(campaignID);
-        return Optional.ofNullable(campaign)
+
+        CampaignResponse campaignResponse = Optional.ofNullable(campaign)
                 .map(c -> buildCampaignToCampaignResponse(campaign))
                 .orElseThrow(() -> new IllegalArgumentException("invalid campaignID"));
+        Instant end = Instant.now();
+        durationLog(start, end, "findCampaignById");
+
+        return campaignResponse;
     }
 
     @Override
@@ -112,14 +131,19 @@ public class CampaignServiceImpl implements CampaignService {
 
     @Override
     public List<CampaignStatisticsResponse> getCampaignStatistics(String jwt) {
+        Instant start = Instant.now();
         Map<CampaignStatus, Long> map = campaignRepository.findAll()
                 .stream()
                 .collect(Collectors.groupingBy(Campaign::getCampaignStatus, Collectors.counting()));
 
-        return map.entrySet()
+        List<CampaignStatisticsResponse> campaignStatisticsResponseList = map.entrySet()
                 .stream()
                 .map(e -> new CampaignStatisticsResponse(e.getKey().toString(), e.getValue().intValue()))
                 .toList();
+        Instant end = Instant.now();
+        durationLog(start, end, "findCampaignById");
+
+        return campaignStatisticsResponseList;
     }
 
     private Campaign setCampaignCategory(Campaign campaign) {
@@ -167,5 +191,12 @@ public class CampaignServiceImpl implements CampaignService {
                 .modifiedUser(userEmail)
                 .modifiedDate(LocalDate.now())
                 .build();
+    }
+
+    private static void durationLog(Instant start, Instant end, String methodName) {
+        long processTime = Duration.between(start, end).getSeconds();
+        if(processTime > 5) {
+            log.warn("process time over 5 seconds!! {} -> {}", methodName, processTime);
+        }
     }
 }
