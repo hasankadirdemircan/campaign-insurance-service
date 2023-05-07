@@ -5,7 +5,10 @@ import com.allianz.insurance.enums.CampaignStatus;
 import lombok.Getter;
 import lombok.Setter;
 
+
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 @Getter
 @Setter
@@ -16,9 +19,12 @@ public class Campaign {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Pattern(regexp = "^[a-zA-Z0-9ğüşöçİĞÜŞÖÇ](?!.*?[^\\na-zA-Z0-9ğüşöçİĞÜŞÖÇ]{2}).*?[a-zA-Z0-9ğüşöçİĞÜŞÖÇ]$", message = "Only accept Turkish Characters and Numbers. Not allowed special characters")
     @Column(name = "advert_title")
     private String advertTitle;
 
+    @Size(min = 20, max = 200, message = "Campaign Detail must be between 20 and 200 characters")
+    @Pattern(regexp = "^[a-zA-Z0-9äöüÄÖÜ]*$", message = "accept Turkish Characters, Numbers and special characters ")
     @Column(name = "campaign_detail")
     private String campaignDetail;
 

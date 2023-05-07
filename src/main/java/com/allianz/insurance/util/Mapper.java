@@ -2,6 +2,7 @@ package com.allianz.insurance.util;
 
 import com.allianz.insurance.dto.CampaignDto;
 import com.allianz.insurance.model.Campaign;
+import com.allianz.insurance.request.CreateCampaignRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -35,5 +36,15 @@ public class Mapper {
         }
         dto = modelMapper.map(model, CampaignDto.class);
         return dto;
+    }
+
+    public Campaign createCampaignRequestToModel(String userEmail, CreateCampaignRequest request) {
+        Campaign campaign = new Campaign();
+        campaign.setCreatedBy(userEmail);
+        campaign.setAdvertTitle(request.getAdvertTitle());
+        campaign.setCampaignDetail(request.getCampaignDetail());
+        campaign.setCampaignCategory(request.getCampaignCategory());
+
+        return campaign;
     }
 }

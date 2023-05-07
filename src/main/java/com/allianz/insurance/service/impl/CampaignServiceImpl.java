@@ -8,6 +8,7 @@ import com.allianz.insurance.model.CampaignHistory;
 import com.allianz.insurance.model.JwtInfo;
 import com.allianz.insurance.repository.CampaignHistoryRepository;
 import com.allianz.insurance.repository.CampaignRepository;
+import com.allianz.insurance.request.CreateCampaignRequest;
 import com.allianz.insurance.response.CampaignResponse;
 import com.allianz.insurance.service.CampaignService;
 import com.allianz.insurance.util.Mapper;
@@ -19,7 +20,9 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.Base64;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -35,24 +38,69 @@ public class CampaignServiceImpl implements CampaignService {
     private Mapper mapper;
 
     @Override
-    public CampaignResponse createCampaign(String jwt, CampaignDto campaignDto) {
-        String username = getUsernameInJwt(jwt);
-        Campaign campaignModel = mapper.dto2Model(username, campaignDto);
-        Optional<Campaign> campaignExist = campaignRepository.findCampaignByCampaignCategoryAndAdvertTitleAndCampaignDetail(
+    public CampaignResponse createCampaign(String jwt, CreateCampaignRequest request) {
+        String userEmail = getEmailInJwt(jwt);
+        Campaign campaignModel = mapper.createCampaignRequestToModel(userEmail, request);
+        Campaign campaignExist = campaignRepository.findCampaignByCampaignCategoryAndAdvertTitleAndCampaignDetail(
                             campaignModel.getCampaignCategory(), campaignModel.getAdvertTitle(), campaignModel.getCampaignDetail());
 
-        Campaign saveCampaign;
-        if(campaignExist.isPresent()) {
-            Campaign campaignPresent = campaignExist.get();
-            campaignPresent.setCampaignStatus(CampaignStatus.REPETITIVE);
-            campaignPresent.setUpdatedBy(username);
-            saveCampaign = campaignPresent;
-        }else {
-            saveCampaign = setCampaignCategory(campaignModel);
-        }
+        Campaign saveCampaign = Optional.ofNullable(campaignExist).map(campaign-> {
+            campaign.setCampaignStatus(CampaignStatus.REPETITIVE);
+            campaign.setUpdatedBy(userEmail);
+            return campaign;
+        }).orElse(setCampaignCategory(campaignModel));
+
         Campaign savedCampaign = campaignRepository.save(saveCampaign);
-        saveCampaignHistory(username, savedCampaign);
+        saveCampaignHistory(userEmail, savedCampaign);
        return buildCampaignToCampaignResponse(savedCampaign);
+    }
+
+    @Override
+    public CampaignResponse activateCampaign(String jwt, Long campaignID) {
+        String userEmail = getEmailInJwt(jwt);
+        Campaign campaign = campaignRepository.findCampaignById(campaignID);
+        Optional.ofNullable(campaign)
+                .filter(c -> c.getCampaignStatus().equals(CampaignStatus.WAITING_FOR_APPROVAL))
+                .map(c -> {
+                    c.setCampaignStatus(CampaignStatus.ACTIVE);
+                    c.setUpdatedBy(userEmail);
+                    return c;
+                })
+                .orElseThrow(() -> new IllegalArgumentException("You can not update the campaign"));
+        saveCampaignHistory(userEmail, campaign);
+        return buildCampaignToCampaignResponse(campaign);
+    }
+
+    @Override
+    public CampaignResponse deactivateCampaign(String jwt, Long campaignID) {
+        String userEmail = getEmailInJwt(jwt);
+        Campaign campaign = campaignRepository.findCampaignById(campaignID);
+        Optional.ofNullable(campaign)
+                .filter(c -> c.getCampaignStatus().equals(CampaignStatus.ACTIVE) || c.getCampaignStatus().equals(CampaignStatus.WAITING_FOR_APPROVAL))
+                .map(c -> {
+                    c.setCampaignStatus(CampaignStatus.DEACTIVATED);
+                    c.setUpdatedBy(userEmail);
+                    return c;
+                })
+                .orElseThrow(() -> new IllegalArgumentException("You can not update the campaign"));
+        saveCampaignHistory(userEmail, campaign);
+        return buildCampaignToCampaignResponse(campaign);
+    }
+
+    @Override
+    public CampaignResponse findCampaignById(String jwt, Long campaignID) {
+        Campaign campaign = campaignRepository.findCampaignById(campaignID);
+        return Optional.ofNullable(campaign)
+                .map(c -> buildCampaignToCampaignResponse(campaign))
+                .orElseThrow(() -> new IllegalArgumentException("invalid campaignID"));
+    }
+
+    @Override
+    public List<CampaignResponse> findAllCampaign(String jwt) {
+        return campaignRepository.findAll()
+                .stream()
+                .map(this::buildCampaignToCampaignResponse)
+                .collect(Collectors.toList());
     }
 
     private Campaign setCampaignCategory(Campaign campaign) {
@@ -70,7 +118,7 @@ public class CampaignServiceImpl implements CampaignService {
                 .build();
     }
 
-    private String getUsernameInJwt(String jwt){
+    private String getEmailInJwt(String jwt){
         String[] chunks = jwt.split("\\.");
         Base64.Decoder decoder = Base64.getUrlDecoder();
         ObjectMapper mapper = new ObjectMapper();
@@ -83,15 +131,15 @@ public class CampaignServiceImpl implements CampaignService {
         return jwtInfo.getEmail();
     }
 
-    private void saveCampaignHistory(String username, Campaign campaign) {
-        campaignHistoryRepository.save(buildCampaignHistory(username, campaign));
+    private void saveCampaignHistory(String userEmail, Campaign campaign) {
+        campaignHistoryRepository.save(buildCampaignHistory(userEmail, campaign));
     }
 
-    private CampaignHistory buildCampaignHistory(String username, Campaign campaign) {
+    private CampaignHistory buildCampaignHistory(String userEmail, Campaign campaign) {
         return CampaignHistory.builder()
                 .campaignID(campaign.getId())
                 .campaignStatus(campaign.getCampaignStatus())
-                .modifiedUser(username)
+                .modifiedUser(userEmail)
                 .modifiedDate(LocalDate.now())
                 .build();
     }
