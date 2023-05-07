@@ -10,10 +10,12 @@ import com.allianz.insurance.repository.CampaignRepository;
 import com.allianz.insurance.request.CreateCampaignRequest;
 import com.allianz.insurance.response.CampaignHistoryResponse;
 import com.allianz.insurance.response.CampaignResponse;
+import com.allianz.insurance.response.CampaignStatisticsResponse;
 import com.allianz.insurance.service.CampaignService;
 import com.allianz.insurance.util.Mapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +23,9 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -106,6 +110,18 @@ public class CampaignServiceImpl implements CampaignService {
     @Override
     public List<CampaignHistoryResponse> findCampaignHistoryById(String jwt, Long campaignID) {
         return campaignHistoryRepository.findCampaignHistoriesByCampaignID(campaignID).stream().map(this::buildCampaignHistoryToCampaignHistoryResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CampaignStatisticsResponse> getCampaignStatistics(String jwt) {
+        Map<CampaignStatus, Long> map = campaignRepository.findAll()
+                .stream()
+                .collect(Collectors.groupingBy(Campaign::getCampaignStatus, Collectors.counting()));
+
+        return map.entrySet()
+                .stream()
+                .map(e -> new CampaignStatisticsResponse(e.getKey().toString(), e.getValue().intValue()))
+                .toList();
     }
 
     private Campaign setCampaignCategory(Campaign campaign) {
