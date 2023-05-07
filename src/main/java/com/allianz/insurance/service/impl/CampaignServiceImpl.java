@@ -2,6 +2,8 @@ package com.allianz.insurance.service.impl;
 
 import com.allianz.insurance.enums.CampaignCategory;
 import com.allianz.insurance.enums.CampaignStatus;
+import com.allianz.insurance.exception.CampaignNotFoundException;
+import com.allianz.insurance.exception.DefaultExceptionHandler;
 import com.allianz.insurance.model.Campaign;
 import com.allianz.insurance.model.CampaignHistory;
 import com.allianz.insurance.model.JwtInfo;
@@ -45,6 +47,7 @@ public class CampaignServiceImpl implements CampaignService {
 
     @Override
     public CampaignResponse createCampaign(String jwt, CreateCampaignRequest request) {
+
         Instant start = Instant.now();
         String userEmail = getEmailInJwt(jwt);
         Campaign campaignModel = mapper.createCampaignRequestToModel(userEmail, request);
@@ -68,15 +71,15 @@ public class CampaignServiceImpl implements CampaignService {
     public CampaignResponse activateCampaign(String jwt, Long campaignID) {
         Instant start = Instant.now();
         String userEmail = getEmailInJwt(jwt);
-        Campaign campaign = campaignRepository.findCampaignById(campaignID);
-        Optional.ofNullable(campaign)
+        Campaign campaign = campaignExistCheck(campaignID, campaignRepository.findCampaignById(campaignID));
+        Optional.of(campaign)
                 .filter(c -> c.getCampaignStatus().equals(CampaignStatus.WAITING_FOR_APPROVAL))
                 .map(c -> {
                     c.setCampaignStatus(CampaignStatus.ACTIVE);
                     c.setUpdatedBy(userEmail);
                     return c;
                 })
-                .orElseThrow(() -> new IllegalArgumentException("You can not update the campaign"));
+                .orElseThrow(() -> new DefaultExceptionHandler("You can not activate the campaign, campaign status is ->  " + campaign.getCampaignStatus()));
         saveCampaignHistory(userEmail, campaign);
         Instant end = Instant.now();
         durationLog(start, end, "activateCampaign");
@@ -87,15 +90,15 @@ public class CampaignServiceImpl implements CampaignService {
     public CampaignResponse deactivateCampaign(String jwt, Long campaignID) {
         Instant start = Instant.now();
         String userEmail = getEmailInJwt(jwt);
-        Campaign campaign = campaignRepository.findCampaignById(campaignID);
-        Optional.ofNullable(campaign)
+        Campaign campaign = campaignExistCheck(campaignID, campaignRepository.findCampaignById(campaignID));
+        Optional.of(campaign)
                 .filter(c -> c.getCampaignStatus().equals(CampaignStatus.ACTIVE) || c.getCampaignStatus().equals(CampaignStatus.WAITING_FOR_APPROVAL))
                 .map(c -> {
                     c.setCampaignStatus(CampaignStatus.DEACTIVATED);
                     c.setUpdatedBy(userEmail);
                     return c;
                 })
-                .orElseThrow(() -> new IllegalArgumentException("You can not update the campaign"));
+                .orElseThrow(() -> new DefaultExceptionHandler("You can not deactivate the campaign, campaign status is ->  " + campaign.getCampaignStatus()));
         saveCampaignHistory(userEmail, campaign);
         Instant end = Instant.now();
         durationLog(start, end, "deactivateCampaign");
@@ -109,7 +112,7 @@ public class CampaignServiceImpl implements CampaignService {
 
         CampaignResponse campaignResponse = Optional.ofNullable(campaign)
                 .map(c -> buildCampaignToCampaignResponse(campaign))
-                .orElseThrow(() -> new IllegalArgumentException("invalid campaignID"));
+                .orElseThrow(() -> new CampaignNotFoundException("campaignID Not Found " + campaignID));
         Instant end = Instant.now();
         durationLog(start, end, "findCampaignById");
 
@@ -198,5 +201,9 @@ public class CampaignServiceImpl implements CampaignService {
         if(processTime > 5) {
             log.warn("process time over 5 seconds!! {} -> {}", methodName, processTime);
         }
+    }
+
+    private Campaign campaignExistCheck(Long campaignID, Campaign campaign) {
+        return Optional.ofNullable(campaign).orElseThrow(() -> new CampaignNotFoundException("campaignID Not Found " + campaignID));
     }
 }

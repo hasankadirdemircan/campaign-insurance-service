@@ -1,7 +1,5 @@
 package com.allianz.insurance.controller;
 
-import com.allianz.insurance.model.Campaign;
-import com.allianz.insurance.model.CampaignHistory;
 import com.allianz.insurance.request.CreateCampaignRequest;
 import com.allianz.insurance.response.CampaignHistoryResponse;
 import com.allianz.insurance.response.CampaignResponse;
@@ -41,7 +39,6 @@ public class CampaignController {
     public CampaignResponse createCampaign(@RequestHeader(name="Authorization") String jwt, @Valid CreateCampaignRequest request) {
         return campaignService.createCampaign(jwt, request);
     }
-    //
 
     @ApiOperation(value = "Activate a campaign", response = CampaignResponse.class)
     @ApiResponses(
