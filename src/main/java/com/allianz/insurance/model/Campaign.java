@@ -22,10 +22,18 @@ public class Campaign {
     @Column(name = "campaign_detail")
     private String campaignDetail;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "campaign_category")
     private CampaignCategory campaignCategory;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private CampaignStatus campaignStatus;
+
+    @Column(name = "created_by")
+    private String createdBy;
+
+    @Column(name = "updated_by")
+    private String updatedBy;
 
 }

@@ -13,15 +13,16 @@ public class Mapper {
     /*
     Campaign
      */
-    public Campaign dto2Model(CampaignDto dto){
-        return dto2Model(dto, null);
+    public Campaign dto2Model(String username, CampaignDto dto){
+        return dto2Model(username, dto, null);
     }
 
-    public Campaign dto2Model(CampaignDto dto, Campaign model){
+    public Campaign dto2Model(String username, CampaignDto dto, Campaign model){
         if(model == null){
             model = new Campaign();
         }
         model = modelMapper.map(dto, Campaign.class);
+        model.setCreatedBy(username);
         return model;
     }
 
