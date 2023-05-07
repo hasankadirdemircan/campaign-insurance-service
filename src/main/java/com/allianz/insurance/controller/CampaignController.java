@@ -1,7 +1,9 @@
 package com.allianz.insurance.controller;
 
 import com.allianz.insurance.model.Campaign;
+import com.allianz.insurance.model.CampaignHistory;
 import com.allianz.insurance.request.CreateCampaignRequest;
+import com.allianz.insurance.response.CampaignHistoryResponse;
 import com.allianz.insurance.response.CampaignResponse;
 import com.allianz.insurance.service.CampaignService;
 import io.swagger.annotations.Api;
@@ -84,7 +86,19 @@ public class CampaignController {
             }
     )
     @GetMapping
-    public List<CampaignResponse> getAllCampaign(@RequestHeader(name="Authorization") String jwt) {
+    public List<CampaignResponse> findAllCampaign(@RequestHeader(name="Authorization") String jwt) {
         return campaignService.findAllCampaign(jwt);
+    }
+
+    @ApiOperation(value = "Get a Campaign History", response = CampaignResponse.class)
+    @ApiResponses(
+            value = {
+                    @ApiResponse(code = 200, message = "Successful Get Campaign History by campaignID"),
+                    @ApiResponse(code = 500, message = "Internal Server Error"),
+            }
+    )
+    @GetMapping("history/{campaignID}")
+    public List<CampaignHistoryResponse> findCampaignHistoryById(@RequestHeader(name="Authorization") String jwt, @PathVariable(value = "campaignID") Long campaignID) {
+        return campaignService.findCampaignHistoryById(jwt, campaignID);
     }
 }

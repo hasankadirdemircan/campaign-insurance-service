@@ -1,6 +1,5 @@
 package com.allianz.insurance.service.impl;
 
-import com.allianz.insurance.dto.CampaignDto;
 import com.allianz.insurance.enums.CampaignCategory;
 import com.allianz.insurance.enums.CampaignStatus;
 import com.allianz.insurance.model.Campaign;
@@ -9,6 +8,7 @@ import com.allianz.insurance.model.JwtInfo;
 import com.allianz.insurance.repository.CampaignHistoryRepository;
 import com.allianz.insurance.repository.CampaignRepository;
 import com.allianz.insurance.request.CreateCampaignRequest;
+import com.allianz.insurance.response.CampaignHistoryResponse;
 import com.allianz.insurance.response.CampaignResponse;
 import com.allianz.insurance.service.CampaignService;
 import com.allianz.insurance.util.Mapper;
@@ -103,6 +103,11 @@ public class CampaignServiceImpl implements CampaignService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<CampaignHistoryResponse> findCampaignHistoryById(String jwt, Long campaignID) {
+        return campaignHistoryRepository.findCampaignHistoriesByCampaignID(campaignID).stream().map(this::buildCampaignHistoryToCampaignHistoryResponse).collect(Collectors.toList());
+    }
+
     private Campaign setCampaignCategory(Campaign campaign) {
         if(campaign.getCampaignCategory() == CampaignCategory.HAYAT_INSURANCE) {
             campaign.setCampaignStatus(CampaignStatus.ACTIVE);
@@ -115,6 +120,12 @@ public class CampaignServiceImpl implements CampaignService {
     private CampaignResponse buildCampaignToCampaignResponse(Campaign campaign) {
         return CampaignResponse.builder()
                 .campaign(mapper.model2Dto(campaign))
+                .build();
+    }
+
+    private CampaignHistoryResponse buildCampaignHistoryToCampaignHistoryResponse(CampaignHistory campaignHistory) {
+        return CampaignHistoryResponse.builder()
+                .campaignHistory(mapper.model2Dto(campaignHistory))
                 .build();
     }
 

@@ -33,5 +33,4 @@ public class CampaignHistory {
     @Column(name = "modified_user")
     private String modifiedUser;
 
-
 }
