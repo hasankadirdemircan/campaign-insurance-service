@@ -96,7 +96,7 @@ public class CampaignController {
             }
     )
     @GetMapping("/campaigns/history/{campaignID}")
-    public List<CampaignHistoryResponse> findCampaignHistoryById(@RequestHeader(name="Authorization") String jwt, @PathVariable(value = "campaignID") Long campaignID) {
+    public CampaignHistoryResponse findCampaignHistoryById(@RequestHeader(name="Authorization") String jwt, @PathVariable(value = "campaignID") Long campaignID) {
         return campaignService.findCampaignHistoryById(jwt, campaignID);
     }
 

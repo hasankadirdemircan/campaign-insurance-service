@@ -1,5 +1,6 @@
 package com.allianz.insurance.service.impl;
 
+import com.allianz.insurance.dto.CampaignHistoryDto;
 import com.allianz.insurance.enums.CampaignCategory;
 import com.allianz.insurance.enums.CampaignStatus;
 import com.allianz.insurance.exception.CampaignNotFoundException;
@@ -25,6 +26,8 @@ import javax.transaction.Transactional;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -129,8 +132,13 @@ public class CampaignServiceImpl implements CampaignService {
     }
 
     @Override
-    public List<CampaignHistoryResponse> findCampaignHistoryById(String jwt, Long campaignID) {
-        return campaignHistoryRepository.findCampaignHistoriesByCampaignID(campaignID).stream().map(this::buildCampaignHistoryToCampaignHistoryResponse).collect(Collectors.toList());
+    public CampaignHistoryResponse findCampaignHistoryById(String jwt, Long campaignID) {
+        Campaign campaign = campaignRepository.findCampaignById(campaignID);
+        campaignExistCheck(campaignID, campaign);
+        List<CampaignHistoryDto> campaignHistoryDtoList = campaignHistoryRepository.findCampaignHistoriesByCampaignID(campaignID).stream()
+                .map(this::buildCampaignHistoryToCampaignHistoryResponse).toList();
+
+        return generateCampaignHistoryResponse(campaignHistoryDtoList, campaign);
     }
 
     @Override
@@ -165,10 +173,8 @@ public class CampaignServiceImpl implements CampaignService {
                 .build();
     }
 
-    private CampaignHistoryResponse buildCampaignHistoryToCampaignHistoryResponse(CampaignHistory campaignHistory) {
-        return CampaignHistoryResponse.builder()
-                .campaignHistory(mapper.model2Dto(campaignHistory))
-                .build();
+    private CampaignHistoryDto buildCampaignHistoryToCampaignHistoryResponse(CampaignHistory campaignHistory) {
+        return mapper.model2Dto(campaignHistory);
     }
 
     private String getEmailInJwt(String jwt){
@@ -197,7 +203,7 @@ public class CampaignServiceImpl implements CampaignService {
                 .campaignID(campaign.getId())
                 .campaignStatus(campaign.getCampaignStatus())
                 .modifiedUser(userEmail)
-                .modifiedDate(LocalDate.now())
+                .modifiedDate(LocalDateTime.now())
                 .build();
     }
 
@@ -221,5 +227,14 @@ public class CampaignServiceImpl implements CampaignService {
         repetitveCampaign.setUpdatedBy(username);
 
         return repetitveCampaign;
+    }
+
+    private CampaignHistoryResponse generateCampaignHistoryResponse(List<CampaignHistoryDto> campaignHistoryDtoList, Campaign campaign) {
+        return CampaignHistoryResponse.builder()
+                .campaignTitle(campaign.getCampaignTitle())
+                .campaignDetail(campaign.getCampaignDetail())
+                .campaignCategory(campaign.getCampaignCategory())
+                .campaignHistory(campaignHistoryDtoList)
+                .build();
     }
 }

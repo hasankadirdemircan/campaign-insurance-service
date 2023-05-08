@@ -18,7 +18,7 @@ public interface CampaignService {
 
     List<CampaignResponse> findAllCampaign(String jwt);
 
-    List<CampaignHistoryResponse> findCampaignHistoryById(String jwt, Long campaignID);
+    CampaignHistoryResponse findCampaignHistoryById(String jwt, Long campaignID);
 
     List<CampaignStatisticsResponse> getCampaignStatistics(String jwt);
 }

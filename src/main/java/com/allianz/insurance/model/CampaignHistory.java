@@ -6,6 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -26,9 +27,9 @@ public class CampaignHistory {
     @Column(name = "status")
     private CampaignStatus campaignStatus;
 
-    @DateTimeFormat(pattern="dd/MM/yyyy HH.mm.ss")
+    @DateTimeFormat(pattern="dd-MM-yyyy HH:mm:ss")
     @Column(name = "modified_date")
-    private LocalDate modifiedDate;
+    private LocalDateTime modifiedDate;
 
     @Column(name = "modified_user")
     private String modifiedUser;

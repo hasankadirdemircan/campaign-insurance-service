@@ -145,18 +145,18 @@ public class CampaignControllerTest {
     public void findCampaignHistoryById_test_successful() {
         //given
         Long campaignID = 1L;
-        List<CampaignHistoryResponse> campaignHistoryResponseExpected = Arrays.asList(CampaignHistoryResponse.builder().campaignHistory(dtoFactory.campaignHistoryDto()).build());
+        CampaignHistoryResponse campaignHistoryResponseExpected = CampaignHistoryResponse.builder().campaignHistory(Arrays.asList(dtoFactory.campaignHistoryDto())).build();
 
         //when
         Mockito.when(campaignService.findCampaignHistoryById(JWT, campaignID)).thenReturn(campaignHistoryResponseExpected);
 
         //then
-        List<CampaignHistoryResponse> campaignHistoryResponse = controller.findCampaignHistoryById(JWT, campaignID);
+        CampaignHistoryResponse campaignHistoryResponse = controller.findCampaignHistoryById(JWT, campaignID);
 
         //assert
         assertEquals(campaignHistoryResponseExpected, campaignHistoryResponse);
-        assertEquals(campaignHistoryResponseExpected.get(0).getCampaignHistory().getCampaignID(),campaignHistoryResponse.get(0).getCampaignHistory().getCampaignID());
-        assertEquals(campaignHistoryResponseExpected.get(0).getCampaignHistory().getModifiedUser(), campaignHistoryResponse.get(0).getCampaignHistory().getModifiedUser());
+        assertEquals(campaignHistoryResponseExpected.getCampaignHistory().get(0).getCampaignID(),campaignHistoryResponse.getCampaignHistory().get(0).getCampaignID());
+        assertEquals(campaignHistoryResponseExpected.getCampaignHistory().get(0).getModifiedUser(), campaignHistoryResponse.getCampaignHistory().get(0).getModifiedUser());
         Mockito.verify(campaignService, Mockito.times(1)).findCampaignHistoryById(JWT, campaignID);
     }
 
