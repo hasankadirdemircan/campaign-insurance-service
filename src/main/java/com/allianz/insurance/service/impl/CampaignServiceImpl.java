@@ -47,7 +47,6 @@ public class CampaignServiceImpl implements CampaignService {
 
     @Override
     public CampaignResponse createCampaign(String jwt, CreateCampaignRequest request) {
-
         Instant start = Instant.now();
         String userEmail = getEmailInJwt(jwt);
         Campaign campaignModel = mapper.createCampaignRequestToModel(userEmail, request);
