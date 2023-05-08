@@ -28,10 +28,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -203,7 +200,7 @@ public class CampaignServiceImpl implements CampaignService {
                 .campaignID(campaign.getId())
                 .campaignStatus(campaign.getCampaignStatus())
                 .modifiedUser(userEmail)
-                .modifiedDate(LocalDateTime.now())
+                .modifiedDate(new Date(System.currentTimeMillis()))
                 .build();
     }
 

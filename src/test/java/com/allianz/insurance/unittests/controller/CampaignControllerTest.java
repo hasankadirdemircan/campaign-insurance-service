@@ -145,7 +145,7 @@ public class CampaignControllerTest {
     public void findCampaignHistoryById_test_successful() {
         //given
         Long campaignID = 1L;
-        CampaignHistoryResponse campaignHistoryResponseExpected = CampaignHistoryResponse.builder().campaignHistory(Arrays.asList(dtoFactory.campaignHistoryDto())).build();
+        CampaignHistoryResponse campaignHistoryResponseExpected = CampaignHistoryResponse.builder().campaignHistory(Arrays.asList(dtoFactory.campaignHistoryDtoWaiting())).build();
 
         //when
         Mockito.when(campaignService.findCampaignHistoryById(JWT, campaignID)).thenReturn(campaignHistoryResponseExpected);

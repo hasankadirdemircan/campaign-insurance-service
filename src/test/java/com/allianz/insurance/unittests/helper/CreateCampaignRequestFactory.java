@@ -13,4 +13,13 @@ public class CreateCampaignRequestFactory {
 
         return request;
     }
+
+    public CreateCampaignRequest createCampaignRequest2() {
+        CreateCampaignRequest request = new CreateCampaignRequest();
+        request.setCampaignTitle("Test Insurance Campaign2");
+        request.setCampaignDetail("this message contains the details of this campaign2");
+        request.setCampaignCategory(CampaignCategory.TSS);
+
+        return request;
+    }
 }

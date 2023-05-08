@@ -1,12 +1,14 @@
 package com.allianz.insurance.model;
 
 import com.allianz.insurance.enums.CampaignStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -27,9 +29,9 @@ public class CampaignHistory {
     @Column(name = "status")
     private CampaignStatus campaignStatus;
 
-    @DateTimeFormat(pattern="dd-MM-yyyy HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @Column(name = "modified_date")
-    private LocalDateTime modifiedDate;
+    private Date modifiedDate;
 
     @Column(name = "modified_user")
     private String modifiedUser;

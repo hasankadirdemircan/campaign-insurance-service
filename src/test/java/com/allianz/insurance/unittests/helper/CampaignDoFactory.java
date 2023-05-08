@@ -8,6 +8,7 @@ import com.allianz.insurance.model.CampaignHistory;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 public class CampaignDoFactory {
 
@@ -74,7 +75,7 @@ public class CampaignDoFactory {
         CampaignHistory campaignHistory = new CampaignHistory();
         campaignHistory.setCampaignID(1L);
         campaignHistory.setModifiedUser("demircanhasankadir@gmail.com");
-        campaignHistory.setModifiedDate(LocalDateTime.now());
+        campaignHistory.setModifiedDate(new Date(System.currentTimeMillis()));
         campaignHistory.setCampaignStatus(CampaignStatus.WAITING_FOR_APPROVAL);
 
         return campaignHistory;
