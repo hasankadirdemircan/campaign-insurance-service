@@ -57,11 +57,9 @@ public class CampaignServiceImpl implements CampaignService {
         Campaign campaignExist = campaignRepository.findCampaignByCampaignCategoryAndCampaignTitleAndCampaignDetail(
                             campaignModel.getCampaignCategory(), campaignModel.getCampaignTitle(), campaignModel.getCampaignDetail());
 
-        Campaign saveCampaign = Optional.ofNullable(campaignExist).map(campaign-> {
-            campaign.setCampaignStatus(CampaignStatus.REPETITIVE);
-            campaign.setUpdatedBy(userEmail);
-            return campaign;
-        }).orElse(setCampaignCategory(campaignModel));
+        Campaign saveCampaign = Optional.ofNullable(campaignExist)
+                .map(campaign-> generateRepetitiveCampaign(userEmail,campaign))
+                .orElse(setCampaignCategory(campaignModel));
 
         Campaign savedCampaign = saveCampaign(saveCampaign);
         saveCampaignHistory(userEmail, savedCampaign);
@@ -212,5 +210,16 @@ public class CampaignServiceImpl implements CampaignService {
 
     private Campaign campaignExistCheck(Long campaignID, Campaign campaign) {
         return Optional.ofNullable(campaign).orElseThrow(() -> new CampaignNotFoundException("campaignID Not Found -> " + campaignID));
+    }
+
+    private Campaign generateRepetitiveCampaign(String username, Campaign campaign) {
+        Campaign repetitveCampaign = new Campaign();
+        repetitveCampaign.setCampaignTitle(campaign.getCampaignTitle());
+        repetitveCampaign.setCampaignDetail(campaign.getCampaignDetail());
+        repetitveCampaign.setCampaignCategory(campaign.getCampaignCategory());
+        repetitveCampaign.setCampaignStatus(CampaignStatus.REPETITIVE);
+        repetitveCampaign.setUpdatedBy(username);
+
+        return repetitveCampaign;
     }
 }
