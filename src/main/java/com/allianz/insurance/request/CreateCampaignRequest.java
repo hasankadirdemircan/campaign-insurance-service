@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CreateCampaignRequest extends BaseRequest {
-    private String advertTitle;
+    private String campaignTitle;
     private String campaignDetail;
     private CampaignCategory campaignCategory;
 }

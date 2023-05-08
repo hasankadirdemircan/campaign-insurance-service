@@ -65,7 +65,7 @@ public class CampaignServiceTest {
 
         //when
         Mockito.when(mapper.createCampaignRequestToModel(userEmail,createCampaignRequest)).thenReturn(campaignRequest);
-        Mockito.when(campaignRepository.findCampaignByCampaignCategoryAndAdvertTitleAndCampaignDetail(campaignRequest.getCampaignCategory(), campaignRequest.getAdvertTitle(), campaignRequest.getCampaignDetail())).thenReturn(null);
+        Mockito.when(campaignRepository.findCampaignByCampaignCategoryAndCampaignTitleAndCampaignDetail(campaignRequest.getCampaignCategory(), campaignRequest.getCampaignTitle(), campaignRequest.getCampaignDetail())).thenReturn(null);
         Mockito.when(campaignRepository.save(campaignRequest)).thenReturn(savedCampaign);
         Mockito.when(campaignHistoryRepository.save(campaignHistory)).thenReturn(campaignHistory);
         Mockito.when(mapper.model2Dto(savedCampaign)).thenReturn(campaignDto);
@@ -77,7 +77,7 @@ public class CampaignServiceTest {
         assertEquals(campaignResponseExpected.getCampaign().getCampaignStatus(), response.getCampaign().getCampaignStatus());
         assertEquals(campaignResponseExpected.getCampaign().getId(), response.getCampaign().getId());
         assertEquals(campaignResponseExpected.getCampaign().getCampaignDetail(), response.getCampaign().getCampaignDetail());
-        Mockito.verify(campaignRepository, Mockito.times(1)).findCampaignByCampaignCategoryAndAdvertTitleAndCampaignDetail(campaignRequest.getCampaignCategory(), campaignRequest.getAdvertTitle(), campaignRequest.getCampaignDetail());
+        Mockito.verify(campaignRepository, Mockito.times(1)).findCampaignByCampaignCategoryAndCampaignTitleAndCampaignDetail(campaignRequest.getCampaignCategory(), campaignRequest.getCampaignTitle(), campaignRequest.getCampaignDetail());
         Mockito.verify(campaignRepository, Mockito.times(1)).save(campaignRequest);
         Mockito.verify(mapper, Mockito.times(1)).model2Dto(savedCampaign);
     }

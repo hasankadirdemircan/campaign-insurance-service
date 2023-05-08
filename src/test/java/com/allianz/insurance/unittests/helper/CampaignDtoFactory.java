@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 public class CampaignDtoFactory {
     public CampaignDto campaignDto() {
         CampaignDto dto = new CampaignDto();
-        dto.setAdvertTitle("Test Insurance Campaign");
+        dto.setCampaignTitle("Test Insurance Campaign");
         dto.setCampaignDetail("this message contains the details of this campaign");
         dto.setCampaignCategory(CampaignCategory.OSS);
         dto.setCampaignStatus(CampaignStatus.WAITING_FOR_APPROVAL);
@@ -22,7 +22,7 @@ public class CampaignDtoFactory {
 
     public CampaignDto campaignActivatedDto() {
         CampaignDto dto = new CampaignDto();
-        dto.setAdvertTitle("Test Insurance Campaign");
+        dto.setCampaignTitle("Test Insurance Campaign");
         dto.setCampaignDetail("this message contains the details of this campaign");
         dto.setCampaignCategory(CampaignCategory.OSS);
         dto.setCampaignStatus(CampaignStatus.ACTIVE);
@@ -33,7 +33,7 @@ public class CampaignDtoFactory {
 
     public CampaignDto campaignDeactivatedDto() {
         CampaignDto dto = new CampaignDto();
-        dto.setAdvertTitle("Test Insurance Campaign");
+        dto.setCampaignTitle("Test Insurance Campaign");
         dto.setCampaignDetail("this message contains the details of this campaign");
         dto.setCampaignCategory(CampaignCategory.OSS);
         dto.setCampaignStatus(CampaignStatus.DEACTIVATE);

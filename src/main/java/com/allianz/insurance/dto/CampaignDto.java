@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class CampaignDto {
     private Long id;
-    private String advertTitle;
+    private String campaignTitle;
     private String campaignDetail;
     private CampaignCategory campaignCategory;
     private CampaignStatus campaignStatus;

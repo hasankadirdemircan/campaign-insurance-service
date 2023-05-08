@@ -54,8 +54,8 @@ public class CampaignServiceImpl implements CampaignService {
         Instant start = Instant.now();
         String userEmail = getEmailInJwt(jwt);
         Campaign campaignModel = mapper.createCampaignRequestToModel(userEmail, request);
-        Campaign campaignExist = campaignRepository.findCampaignByCampaignCategoryAndAdvertTitleAndCampaignDetail(
-                            campaignModel.getCampaignCategory(), campaignModel.getAdvertTitle(), campaignModel.getCampaignDetail());
+        Campaign campaignExist = campaignRepository.findCampaignByCampaignCategoryAndCampaignTitleAndCampaignDetail(
+                            campaignModel.getCampaignCategory(), campaignModel.getCampaignTitle(), campaignModel.getCampaignDetail());
 
         Campaign saveCampaign = Optional.ofNullable(campaignExist).map(campaign-> {
             campaign.setCampaignStatus(CampaignStatus.REPETITIVE);

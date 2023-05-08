@@ -43,7 +43,7 @@ public class Mapper {
     public Campaign createCampaignRequestToModel(String userEmail, CreateCampaignRequest request) {
         Campaign campaign = new Campaign();
         campaign.setCreatedBy(userEmail);
-        campaign.setAdvertTitle(request.getAdvertTitle());
+        campaign.setCampaignTitle(request.getCampaignTitle());
         campaign.setCampaignDetail(request.getCampaignDetail());
         campaign.setCampaignCategory(request.getCampaignCategory());
 

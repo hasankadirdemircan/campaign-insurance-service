@@ -5,8 +5,8 @@ import com.allianz.insurance.model.Campaign;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CampaignRepository extends JpaRepository<Campaign, Long>{
-    Campaign findCampaignByCampaignCategoryAndAdvertTitleAndCampaignDetail(CampaignCategory category,
-                                                                                      String title, String detail);
+    Campaign findCampaignByCampaignCategoryAndCampaignTitleAndCampaignDetail(CampaignCategory category,
+                                                                             String title, String detail);
     Campaign findCampaignById(Long id);
 
 }

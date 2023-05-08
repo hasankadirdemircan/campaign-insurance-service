@@ -13,7 +13,7 @@ public class CampaignDoFactory {
     public Campaign campaign(){
         Campaign campaign = new Campaign();
         campaign.setCreatedBy("demircanhasankadir@gmail.com");
-        campaign.setAdvertTitle("Test Insurance Campaign");
+        campaign.setCampaignTitle("Test Insurance Campaign");
         campaign.setCampaignDetail("this message contains the details of this campaign");
         campaign.setCampaignCategory(CampaignCategory.OSS);
 
@@ -24,7 +24,7 @@ public class CampaignDoFactory {
         Campaign campaign = new Campaign();
         campaign.setId(1L);
         campaign.setCreatedBy("demircanhasankadir@gmail.com");
-        campaign.setAdvertTitle("Test Insurance Campaign");
+        campaign.setCampaignTitle("Test Insurance Campaign");
         campaign.setCampaignDetail("this message contains the details of this campaign");
         campaign.setCampaignCategory(CampaignCategory.OSS);
 
@@ -35,7 +35,7 @@ public class CampaignDoFactory {
         Campaign campaign = new Campaign();
         campaign.setId(1L);
         campaign.setCreatedBy("demircanhasankadir@gmail.com");
-        campaign.setAdvertTitle("Test Insurance Campaign");
+        campaign.setCampaignTitle("Test Insurance Campaign");
         campaign.setCampaignDetail("this message contains the details of this campaign");
         campaign.setCampaignCategory(CampaignCategory.OSS);
         campaign.setCampaignStatus(CampaignStatus.WAITING_FOR_APPROVAL);
@@ -47,7 +47,7 @@ public class CampaignDoFactory {
         Campaign campaign = new Campaign();
         campaign.setId(1L);
         campaign.setCreatedBy("demircanhasankadir@gmail.com");
-        campaign.setAdvertTitle("Test Insurance Campaign");
+        campaign.setCampaignTitle("Test Insurance Campaign");
         campaign.setCampaignDetail("this message contains the details of this campaign");
         campaign.setCampaignCategory(CampaignCategory.OSS);
         campaign.setCampaignStatus(CampaignStatus.ACTIVE);
@@ -60,7 +60,7 @@ public class CampaignDoFactory {
         Campaign campaign = new Campaign();
         campaign.setId(1L);
         campaign.setCreatedBy("demircanhasankadir@gmail.com");
-        campaign.setAdvertTitle("Test Insurance Campaign");
+        campaign.setCampaignTitle("Test Insurance Campaign");
         campaign.setCampaignDetail("this message contains the details of this campaign");
         campaign.setCampaignCategory(CampaignCategory.OSS);
         campaign.setCampaignStatus(CampaignStatus.DEACTIVATE);

@@ -55,7 +55,7 @@ public class CampaignControllerTest {
 
         //assert
         assertEquals(campaignResponseExpected, campaignResponse);
-        assertEquals(campaignResponseExpected.getCampaign().getAdvertTitle(),campaignResponse.getCampaign().getAdvertTitle());
+        assertEquals(campaignResponseExpected.getCampaign().getCampaignTitle(),campaignResponse.getCampaign().getCampaignTitle());
         assertEquals(campaignResponseExpected.getCampaign().getCampaignDetail(),campaignResponse.getCampaign().getCampaignDetail());
         Mockito.verify(campaignService, Mockito.times(1)).createCampaign(JWT, createCampaignRequest);
     }
@@ -74,7 +74,7 @@ public class CampaignControllerTest {
 
         //assert
         assertEquals(campaignResponseExpected, campaignResponse);
-        assertEquals(campaignResponseExpected.getCampaign().getAdvertTitle(),campaignResponse.getCampaign().getAdvertTitle());
+        assertEquals(campaignResponseExpected.getCampaign().getCampaignTitle(),campaignResponse.getCampaign().getCampaignTitle());
         assertEquals(campaignResponseExpected.getCampaign().getCampaignDetail(),campaignResponse.getCampaign().getCampaignDetail());
         assertEquals(campaignResponseExpected.getCampaign().getCampaignStatus(),campaignResponse.getCampaign().getCampaignStatus());
         Mockito.verify(campaignService, Mockito.times(1)).activateCampaign(JWT, campaignID);
@@ -94,7 +94,7 @@ public class CampaignControllerTest {
 
         //assert
         assertEquals(campaignResponseExpected, campaignResponse);
-        assertEquals(campaignResponseExpected.getCampaign().getAdvertTitle(),campaignResponse.getCampaign().getAdvertTitle());
+        assertEquals(campaignResponseExpected.getCampaign().getCampaignTitle(),campaignResponse.getCampaign().getCampaignTitle());
         assertEquals(campaignResponseExpected.getCampaign().getCampaignDetail(),campaignResponse.getCampaign().getCampaignDetail());
         assertEquals(campaignResponseExpected.getCampaign().getCampaignStatus(),campaignResponse.getCampaign().getCampaignStatus());
         Mockito.verify(campaignService, Mockito.times(1)).deactivateCampaign(JWT, campaignID);
@@ -116,7 +116,7 @@ public class CampaignControllerTest {
 
         //assert
         assertEquals(campaignResponseExpected, campaignResponse);
-        assertEquals(campaignResponseExpected.getCampaign().getAdvertTitle(),campaignResponse.getCampaign().getAdvertTitle());
+        assertEquals(campaignResponseExpected.getCampaign().getCampaignTitle(),campaignResponse.getCampaign().getCampaignTitle());
         assertEquals(campaignResponseExpected.getCampaign().getCampaignDetail(),campaignResponse.getCampaign().getCampaignDetail());
         assertEquals(campaignResponseExpected.getCampaign().getCampaignStatus(),campaignResponse.getCampaign().getCampaignStatus());
         Mockito.verify(campaignService, Mockito.times(1)).findCampaignById(JWT, campaignID);
@@ -135,7 +135,7 @@ public class CampaignControllerTest {
 
         //assert
         assertEquals(campaignResponseExpected, campaignResponse);
-        assertEquals(campaignResponseExpected.get(0).getCampaign().getAdvertTitle(),campaignResponse.get(0).getCampaign().getAdvertTitle());
+        assertEquals(campaignResponseExpected.get(0).getCampaign().getCampaignTitle(),campaignResponse.get(0).getCampaign().getCampaignTitle());
         assertEquals(campaignResponseExpected.get(0).getCampaign().getCampaignDetail(),campaignResponse.get(0).getCampaign().getCampaignDetail());
         assertEquals(campaignResponseExpected.get(0).getCampaign().getCampaignStatus(),campaignResponse.get(0).getCampaign().getCampaignStatus());
         Mockito.verify(campaignService, Mockito.times(1)).findAllCampaign(JWT);
