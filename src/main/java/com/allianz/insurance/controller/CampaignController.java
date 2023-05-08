@@ -22,9 +22,6 @@ public class CampaignController {
     @Autowired
     private CampaignService campaignService;
 
-    /*
-    eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJkZW1pcmNhbmhhc2Fua2FkaXJAZ21haWwuY29tIiwiaWF0IjoxNTE2MjM5MDIyfQ.gj0OOwdIFtyS3L32NQ2hSGP1c6MqZLFZbk8isg3tqpM
-     */
     @ApiOperation(value = "Create a campaign", response = CampaignResponse.class)
     @ApiResponses(
             value = {
@@ -33,13 +30,14 @@ public class CampaignController {
                     @ApiResponse(code = 415, message = "The content type is unsupported"),
                     @ApiResponse(code = 500, message = "An unexpected error has occurred. The error has been logged and is being investigated."),
             }
-    )
+    )//
     @PostMapping("/campaigns")
     public CampaignResponse createCampaign(
             @ApiParam(
                     value = "JWT Token" ,
                     example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJkZW1pcmNhbmhhc2Fua2FkaXJAZ21haWwuY29tIiwiaWF0IjoxNTE2MjM5MDIyfQ.gj0OOwdIFtyS3L32NQ2hSGP1c6MqZLFZbk8isg3tqpM")
-            @RequestHeader(name="Authorization") String jwt, @Valid CreateCampaignRequest request) {
+            @RequestHeader(name="Authorization") String jwt,
+            @Valid CreateCampaignRequest request) {
         return campaignService.createCampaign(jwt, request);
     }
 

@@ -25,7 +25,7 @@ public class Campaign {
     private String campaignTitle;
 
     @Size(min = 20, max = 200, message = "Campaign Detail must be between 20 and 200 characters")
-    @Pattern(regexp = "^[a-zA-Z0-9äöüÄÖÜşŞiİ.!.,&+ ]*$", message = "accept Turkish Characters, Numbers and special characters ")
+    @Pattern(regexp = "^[a-zA-Z0-9äöüÄÖÜşŞiİ.!.,&+ ]*$", message = "accept Turkish Characters, Numbers and special characters")
     @Column(name = "campaign_detail")
     private String campaignDetail;
 
