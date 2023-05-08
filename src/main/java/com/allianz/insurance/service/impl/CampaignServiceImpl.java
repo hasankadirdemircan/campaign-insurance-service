@@ -196,7 +196,7 @@ public class CampaignServiceImpl implements CampaignService {
                 .build();
     }
 
-    private static void durationLog(Instant start, Instant end, String methodName) {
+    private void durationLog(Instant start, Instant end, String methodName) {
         long processTime = Duration.between(start, end).getSeconds();
         if(processTime > 5) {
             log.warn("process time over 5 seconds!! {} -> {}", methodName, processTime);

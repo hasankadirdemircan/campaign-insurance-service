@@ -101,7 +101,7 @@ public class CampaignController {
     }
 
 
-    @ApiOperation(value = "Get a Campaign History", response = CampaignResponse.class)
+    @ApiOperation(value = "Get All Campaign Statics", response = CampaignResponse.class)
     @ApiResponses(
             value = {
                     @ApiResponse(code = 200, message = "Successful Get Campaign History by campaignID"),

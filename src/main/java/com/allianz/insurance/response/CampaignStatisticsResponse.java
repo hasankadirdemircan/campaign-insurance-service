@@ -1,6 +1,5 @@
 package com.allianz.insurance.response;
 
-import com.allianz.insurance.enums.CampaignStatus;
 import lombok.*;
 
 @Builder

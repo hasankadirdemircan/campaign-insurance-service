@@ -1,4 +1,4 @@
-package com.allianz.insurance.testbase.helper;
+package com.allianz.insurance.unittests.helper;
 
 
 import com.allianz.insurance.enums.CampaignCategory;
