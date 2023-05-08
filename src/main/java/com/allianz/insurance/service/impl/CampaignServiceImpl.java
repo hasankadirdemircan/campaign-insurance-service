@@ -115,7 +115,7 @@ public class CampaignServiceImpl implements CampaignService {
 
         CampaignResponse campaignResponse = Optional.ofNullable(campaign)
                 .map(c -> buildCampaignToCampaignResponse(campaign))
-                .orElseThrow(() -> new CampaignNotFoundException("campaignID Not Found " + campaignID));
+                .orElseThrow(() -> new CampaignNotFoundException("campaignID Not Found -> " + campaignID));
         Instant end = Instant.now();
         durationLog(start, end, "findCampaignById");
 
@@ -204,13 +204,13 @@ public class CampaignServiceImpl implements CampaignService {
     }
 
     private void durationLog(Instant start, Instant end, String methodName) {
-        long processTime = Duration.between(start, end).getSeconds();
+        long processTime = Duration.between(start, end).toMillis();
         if(processTime > 5) {
-            log.warn("process time over 5 seconds!! {} -> {}", methodName, processTime);
+            log.warn("process time over 5 milliseconds!! {} -> {} ms", methodName, processTime);
         }
     }
 
     private Campaign campaignExistCheck(Long campaignID, Campaign campaign) {
-        return Optional.ofNullable(campaign).orElseThrow(() -> new CampaignNotFoundException("campaignID Not Found " + campaignID));
+        return Optional.ofNullable(campaign).orElseThrow(() -> new CampaignNotFoundException("campaignID Not Found -> " + campaignID));
     }
 }

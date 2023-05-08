@@ -1,6 +1,7 @@
 package com.allianz.insurance.unittests.service;
 
 import com.allianz.insurance.dto.CampaignDto;
+import com.allianz.insurance.exception.CampaignNotFoundException;
 import com.allianz.insurance.exception.DefaultExceptionHandler;
 import com.allianz.insurance.model.Campaign;
 import com.allianz.insurance.model.CampaignHistory;
@@ -109,7 +110,7 @@ public class CampaignServiceTest {
     }
 
     @Test
-    public void activateCampaign_test_does_not_allow_to_activate_for_deactivated_campaign_fail() {
+    public void activateCampaign_test_should_not_allow_to_activate_for_deactivated_campaign_fail() {
         //given
         Long campaignID = 1L;
         Campaign deactivatedCampaign = campaignDoFactory.deactivatedCampaign();
@@ -127,7 +128,7 @@ public class CampaignServiceTest {
     }
 
     @Test
-    public void activateCampaign_test_does_not_allow_to_activate_for_activated_campaign_fail() {
+    public void activateCampaign_test_should_not_allow_to_activate_for_activated_campaign_fail() {
         //given
         Long campaignID = 1L;
         Campaign deactivatedCampaign = campaignDoFactory.activatedCampaign();
@@ -143,6 +144,23 @@ public class CampaignServiceTest {
         assertEquals("You can not activate the campaign, campaign status is ->  ACTIVE", thrown.getMessage());
         Mockito.verify(campaignRepository, Mockito.times(1)).findCampaignById(campaignID);
     }
+    @Test
+    public void activateCampaign_test_CampaignNotFoundException_fail() {
+        //given
+        Long campaignID = 1L;
+
+        //when
+        Mockito.when(campaignRepository.findCampaignById(campaignID)).thenReturn(null);
+
+        //then
+        CampaignNotFoundException thrown = Assertions.assertThrows(CampaignNotFoundException.class,
+                () -> campaignService.activateCampaign(JWT, campaignID));
+
+        //assert
+        assertEquals("campaignID Not Found -> 1", thrown.getMessage());
+        Mockito.verify(campaignRepository, Mockito.times(1)).findCampaignById(campaignID);
+    }
+
 
 
     @Test
@@ -170,6 +188,41 @@ public class CampaignServiceTest {
         Mockito.verify(campaignRepository, Mockito.times(1)).findCampaignById(campaignID);
         Mockito.verify(campaignRepository, Mockito.times(1)).save(campaign);
         Mockito.verify(mapper, Mockito.times(1)).model2Dto(campaign);
+    }
+
+    @Test
+    public void deactivateCampaign_test_should_not_allow_to_deactivate_for_activate_fail() {
+        //given
+        Long campaignID = 1L;
+        Campaign deactivatedCampaign = campaignDoFactory.deactivatedCampaign();
+
+        //when
+        Mockito.when(campaignRepository.findCampaignById(campaignID)).thenReturn(deactivatedCampaign);
+
+        //then
+        DefaultExceptionHandler thrown = Assertions.assertThrows(DefaultExceptionHandler.class,
+                () -> campaignService.deactivateCampaign(JWT, campaignID));
+
+        //assert
+        assertEquals("You can not deactivate the campaign, campaign status is ->  DEACTIVATE", thrown.getMessage());
+        Mockito.verify(campaignRepository, Mockito.times(1)).findCampaignById(campaignID);
+    }
+
+    @Test
+    public void findCampaignById_test_CampaignNotFoundException_fail() {
+        //given
+        Long campaignID = 1L;
+
+        //when
+        Mockito.when(campaignRepository.findCampaignById(campaignID)).thenReturn(null);
+
+        //then
+        CampaignNotFoundException thrown = Assertions.assertThrows(CampaignNotFoundException.class,
+                () -> campaignService.findCampaignById(JWT, campaignID));
+
+        //assert
+        assertEquals("campaignID Not Found -> 1", thrown.getMessage());
+        Mockito.verify(campaignRepository, Mockito.times(1)).findCampaignById(campaignID);
     }
 
 

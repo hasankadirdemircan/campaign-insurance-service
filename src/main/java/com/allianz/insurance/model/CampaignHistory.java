@@ -26,7 +26,7 @@ public class CampaignHistory {
     @Column(name = "status")
     private CampaignStatus campaignStatus;
 
-    @DateTimeFormat(pattern="dd/MM/yyyy")
+    @DateTimeFormat(pattern="dd/MM/yyyy HH.mm.ss")
     @Column(name = "modified_date")
     private LocalDate modifiedDate;
 

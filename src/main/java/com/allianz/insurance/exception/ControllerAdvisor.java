@@ -54,15 +54,4 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorMessages, HttpStatus.BAD_REQUEST);
     }
 
-   /* @ExceptionHandler(value = { ConstraintViolationException.class})
-    protected ResponseEntity<Object> handleNotAuthenticated(RuntimeException ex, WebRequest request) {
-
-        // String message =  extract violation message from exception
-new Basis
-        return handleExceptionInternal(ex, "message",
-                new HttpHeaders(), HttpStatus.NOT_ACCEPTABLE, request);
-    }
-
-    */
-
 }

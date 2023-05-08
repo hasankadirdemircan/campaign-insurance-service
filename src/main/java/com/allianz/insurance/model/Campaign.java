@@ -20,7 +20,7 @@ public class Campaign {
     private Long id;
 
     @Size(min = 10, max = 50, message = "Advert Title must be between 10 and 50 characters")
-    @Pattern(regexp = "^[a-zA-Z0-9ğüşöçİĞÜŞÖÇ](?!.*?[^\\na-zA-Z0-9ğüşöçİĞÜŞÖÇ]{2}).*?[a-zA-Z0-9ğüşöçİĞÜŞÖÇ]$", message = "Only accept Turkish Characters and Numbers. Not allowed special characters")
+    @Pattern(regexp = "^[a-zA-Z0-9ğüşöçıİĞÜŞÖÇ](?!.*?[^\\na-zA-Z0-9ğüşöçıİĞÜŞÖÇ]{2}).*?[a-zA-Z0-9ğüşöçıİĞÜŞÖÇ]$", message = "Only accept Turkish Characters and Numbers. Not allowed special characters")
     @Column(name = "advert_title")
     private String advertTitle;
 

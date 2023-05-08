@@ -14,7 +14,6 @@
 To Run with Docker
 
 Firstly, need to build Dockerfile
-
 ```
 $ docker build --tag=insurance-campaign-service:latest .
 ```

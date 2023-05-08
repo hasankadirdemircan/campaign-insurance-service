@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @Validated
-@RequestMapping("/insurance")
+@RequestMapping("/v1/insurance")
 @Api(value="Insurance Campaign Management Controller", description="Operations pertaining to campaign in Insurance Management System")
 public class CampaignController {
 
@@ -35,7 +35,7 @@ public class CampaignController {
                     @ApiResponse(code = 500, message = "Internal Server Error"),
             }
     )
-    @PostMapping
+    @PostMapping("/campaigns")
     public CampaignResponse createCampaign(@RequestHeader(name="Authorization") String jwt, @Valid CreateCampaignRequest request) {
         return campaignService.createCampaign(jwt, request);
     }
@@ -47,7 +47,7 @@ public class CampaignController {
                     @ApiResponse(code = 500, message = "Internal Server Error"),
             }
     )
-    @PutMapping("/activate/{campaignID}")
+    @PutMapping("/campaigns/activate/{campaignID}")
     public CampaignResponse activateCampaign(@RequestHeader(name="Authorization") String jwt, @PathVariable(value = "campaignID") Long campaignID) {
         return campaignService.activateCampaign(jwt, campaignID);
     }
@@ -59,7 +59,7 @@ public class CampaignController {
                     @ApiResponse(code = 500, message = "Internal Server Error"),
             }
     )
-    @PutMapping("/deactivate/{campaignID}")
+    @PutMapping("/campaigns/deactivate/{campaignID}")
     public CampaignResponse deactivateCampaign(@RequestHeader(name="Authorization") String jwt, @PathVariable(value = "campaignID") Long campaignID) {
         return campaignService.deactivateCampaign(jwt, campaignID);
     }
@@ -71,7 +71,7 @@ public class CampaignController {
                     @ApiResponse(code = 500, message = "Internal Server Error"),
             }
     )
-    @GetMapping("{campaignID}")
+    @GetMapping("/campaigns/{campaignID}")
     public CampaignResponse getCampaignById(@RequestHeader(name="Authorization") String jwt, @PathVariable(value = "campaignID") Long campaignID) {
         return campaignService.findCampaignById(jwt, campaignID);
     }
@@ -83,7 +83,7 @@ public class CampaignController {
                     @ApiResponse(code = 500, message = "Internal Server Error"),
             }
     )
-    @GetMapping
+    @GetMapping("/campaigns")
     public List<CampaignResponse> findAllCampaign(@RequestHeader(name="Authorization") String jwt) {
         return campaignService.findAllCampaign(jwt);
     }
@@ -95,7 +95,7 @@ public class CampaignController {
                     @ApiResponse(code = 500, message = "Internal Server Error"),
             }
     )
-    @GetMapping("history/{campaignID}")
+    @GetMapping("/campaigns/history/{campaignID}")
     public List<CampaignHistoryResponse> findCampaignHistoryById(@RequestHeader(name="Authorization") String jwt, @PathVariable(value = "campaignID") Long campaignID) {
         return campaignService.findCampaignHistoryById(jwt, campaignID);
     }
@@ -108,7 +108,7 @@ public class CampaignController {
                     @ApiResponse(code = 500, message = "Internal Server Error"),
             }
     )
-    @GetMapping("campaign/statistics")
+    @GetMapping("/campaigns/statistics")
     public List<CampaignStatisticsResponse> getCampaignStatistics(@RequestHeader(name="Authorization") String jwt) {
         return campaignService.getCampaignStatistics(jwt);
     }
