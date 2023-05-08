@@ -36,14 +36,18 @@ import java.util.stream.Collectors;
 @Transactional
 public class CampaignServiceImpl implements CampaignService {
 
-    @Autowired
-    private CampaignRepository campaignRepository;
+    private final CampaignRepository campaignRepository;
+    private final CampaignHistoryRepository campaignHistoryRepository;
+    private final Mapper mapper;
 
     @Autowired
-    private CampaignHistoryRepository campaignHistoryRepository;
-
-    @Autowired
-    private Mapper mapper;
+    public CampaignServiceImpl(CampaignRepository campaignRepository,
+                               CampaignHistoryRepository campaignHistoryRepository,
+                               Mapper mapper) {
+        this.campaignRepository = campaignRepository;
+        this.campaignHistoryRepository = campaignHistoryRepository;
+        this.mapper = mapper;
+    }
 
     @Override
     public CampaignResponse createCampaign(String jwt, CreateCampaignRequest request) {
@@ -59,7 +63,7 @@ public class CampaignServiceImpl implements CampaignService {
             return campaign;
         }).orElse(setCampaignCategory(campaignModel));
 
-        Campaign savedCampaign = campaignRepository.save(saveCampaign);
+        Campaign savedCampaign = saveCampaign(saveCampaign);
         saveCampaignHistory(userEmail, savedCampaign);
         Instant end = Instant.now();
         durationLog(start, end, "createCampaign");
@@ -82,7 +86,7 @@ public class CampaignServiceImpl implements CampaignService {
         saveCampaignHistory(userEmail, campaign);
         Instant end = Instant.now();
         durationLog(start, end, "activateCampaign");
-        return buildCampaignToCampaignResponse(campaign);
+        return buildCampaignToCampaignResponse(saveCampaign(campaign));
     }
 
     @Override
@@ -101,7 +105,7 @@ public class CampaignServiceImpl implements CampaignService {
         saveCampaignHistory(userEmail, campaign);
         Instant end = Instant.now();
         durationLog(start, end, "deactivateCampaign");
-        return buildCampaignToCampaignResponse(campaign);
+        return buildCampaignToCampaignResponse(saveCampaign(campaign));
     }
 
     @Override
@@ -184,6 +188,10 @@ public class CampaignServiceImpl implements CampaignService {
 
     private void saveCampaignHistory(String userEmail, Campaign campaign) {
         campaignHistoryRepository.save(buildCampaignHistory(userEmail, campaign));
+    }
+
+    private Campaign saveCampaign(Campaign campaign) {
+        return campaignRepository.save(campaign);
     }
 
     private CampaignHistory buildCampaignHistory(String userEmail, Campaign campaign) {
