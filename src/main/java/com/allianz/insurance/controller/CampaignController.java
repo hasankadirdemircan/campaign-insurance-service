@@ -30,7 +30,7 @@ public class CampaignController {
                     @ApiResponse(code = 415, message = "The content type is unsupported"),
                     @ApiResponse(code = 500, message = "An unexpected error has occurred. The error has been logged and is being investigated."),
             }
-    )//
+    )
     @PostMapping("/campaigns")
     public CampaignResponse createCampaign(
             @ApiParam(

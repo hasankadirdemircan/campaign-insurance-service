@@ -1,5 +1,12 @@
 # Insurance Campaign Service
 
+### Before Starting
+> Note: In the project, the Auth mechanism is counted as existing. That's why a static jwt was created.
+
+>JWT -> `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJkZW1pcmNhbmhhc2Fua2FkaXJAZ21haWwuY29tIiwiaWF0IjoxNTE2MjM5MDIyfQ.gj0OOwdIFtyS3L32NQ2hSGP1c6MqZLFZbk8isg3tqpM`
+
+> Since I'm using hibernate ddl auto in the project, the tables will be created automatically when the project is up.
+
 ## Tech Stack
 - Java 11+
 - Maven 3.6+
@@ -8,7 +15,6 @@
 - Swagger Doc
 - Dockerized Project
 - Slf4j Logging
-
 
 ## How Can We Run the Project
 To Run with Docker
