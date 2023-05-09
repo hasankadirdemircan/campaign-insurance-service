@@ -15,9 +15,12 @@
 - Swagger Doc
 - Dockerized Project
 - Slf4j Logging
+- Custom Exceptions (@ControllerAdvice)
+- Mockito -> Unit Test
+- Mockmvc -> Integration Test
 
 ## How Can We Run the Project
-To Run with Docker
+#### To Run with Docker
 - Clone Project
 - Go to `campaign-insurance-service` folder.
 - To Build Dockerfile and generate image
@@ -29,6 +32,10 @@ $ docker build --tag=insurance-campaign-service:latest .
 ```
 $ docker run -p8080:8080 insurance-campaign-service:latest
 ```
+#### To Run on Intellij IDEA
+- Clone Project
+- Open Project with Intellij IDEA
+- Run `InsuranceApplication`
 
 ## Swagger Documentation and H2 Database
 - Swagger -> http://localhost:8080/swagger-ui.html

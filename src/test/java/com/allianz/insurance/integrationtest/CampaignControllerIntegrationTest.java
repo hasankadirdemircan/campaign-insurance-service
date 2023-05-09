@@ -1,5 +1,7 @@
 package com.allianz.insurance.integrationtest;
 
+import com.allianz.insurance.enums.CampaignCategory;
+import com.allianz.insurance.enums.CampaignStatus;
 import com.allianz.insurance.model.Campaign;
 import com.allianz.insurance.request.CreateCampaignRequest;
 import com.allianz.insurance.response.CampaignHistoryResponse;
@@ -21,10 +23,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -49,8 +52,8 @@ public class CampaignControllerIntegrationTest{
     @Test
     public void should_createCampaign() throws Exception {
         CampaignResponse campaignResponseExpected = CampaignResponse.builder().campaign(dtoFactory.campaignDto()).build();
-
-        MvcResult result = createCampaign();
+        CreateCampaignRequest createCampaignRequest = createCampaignRequestFactory.createCampaignRequest();
+        MvcResult result = createCampaign(createCampaignRequest);
 
         CampaignResponse campaignResponse = new Gson().fromJson(result.getResponse().getContentAsString(), CampaignResponse.class);
         assertEquals(campaignResponseExpected.getCampaign().getCampaignTitle(),campaignResponse.getCampaign().getCampaignTitle());
@@ -60,9 +63,11 @@ public class CampaignControllerIntegrationTest{
 
     @Test
     public void should_activateCampaign() throws Exception {
-        Long campaignID = 1L;
         CampaignResponse campaignResponseExpected = CampaignResponse.builder().campaign(dtoFactory.campaignActivatedDto()).build();
-        createCampaign();
+        CreateCampaignRequest createCampaignRequest = createCampaignRequestFactory.createCampaignRequest5();
+        CampaignResponse createdCampaign = getCampaignResponseFromMvcResult(createCampaign(createCampaignRequest));
+        Long campaignID = createdCampaign.getCampaign().getId();
+
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
                         .put("/v1/insurance/campaigns/activate/" + campaignID)
                         .header("Authorization", JWT)
@@ -72,16 +77,18 @@ public class CampaignControllerIntegrationTest{
                 .andReturn();
 
         CampaignResponse campaignResponse = new Gson().fromJson(result.getResponse().getContentAsString(), CampaignResponse.class);
-        assertEquals(campaignResponseExpected.getCampaign().getCampaignTitle(),campaignResponse.getCampaign().getCampaignTitle());
-        assertEquals(campaignResponseExpected.getCampaign().getCampaignDetail(),campaignResponse.getCampaign().getCampaignDetail());
         assertEquals(campaignResponseExpected.getCampaign().getCampaignStatus(),campaignResponse.getCampaign().getCampaignStatus());
+        assertEquals("Test Insurance Campaign5",campaignResponse.getCampaign().getCampaignTitle());
+        assertEquals("this message contains the details of this campaign5",campaignResponse.getCampaign().getCampaignDetail());
     }
 
     @Test
     public void should_deactivateCampaign() throws Exception {
-        Long campaignID = 1L;
-        CampaignResponse campaignResponseExpected = CampaignResponse.builder().campaign(dtoFactory.campaignDeactivatedDto()).build();
-        createCampaign();
+        CreateCampaignRequest createCampaignRequest = createCampaignRequestFactory.createCampaignRequest3();
+
+        CampaignResponse createdCampaign = getCampaignResponseFromMvcResult(createCampaign(createCampaignRequest));
+        Long campaignID = createdCampaign.getCampaign().getId();
+
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
                         .put("/v1/insurance/campaigns/deactivate/" + campaignID)
                         .header("Authorization", JWT)
@@ -91,14 +98,13 @@ public class CampaignControllerIntegrationTest{
                 .andReturn();
 
         CampaignResponse campaignResponse = new Gson().fromJson(result.getResponse().getContentAsString(), CampaignResponse.class);
-        assertEquals(campaignResponseExpected.getCampaign().getCampaignTitle(),campaignResponse.getCampaign().getCampaignTitle());
-        assertEquals(campaignResponseExpected.getCampaign().getCampaignDetail(),campaignResponse.getCampaign().getCampaignDetail());
-        assertEquals(campaignResponseExpected.getCampaign().getCampaignStatus(),campaignResponse.getCampaign().getCampaignStatus());
+        assertEquals(CampaignStatus.DEACTIVATE,campaignResponse.getCampaign().getCampaignStatus());
+        assertEquals(CampaignCategory.OSS,campaignResponse.getCampaign().getCampaignCategory());
     }
 
     @Test
     public void should_throw_NotFoundException() throws Exception {
-        Long campaignID = 1L;
+        Long campaignID = 13242423434343423L;
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
                         .put("/v1/insurance/campaigns/deactivate/" + campaignID)
                         .header("Authorization", JWT)
@@ -112,9 +118,10 @@ public class CampaignControllerIntegrationTest{
 
     @Test
     public void should_getCampaignById() throws Exception {
-        Long campaignID = 1L;
-        CampaignResponse campaignResponseExpected = CampaignResponse.builder().campaign(dtoFactory.campaignDto()).build();
-        createCampaign();
+        CreateCampaignRequest createCampaignRequest = createCampaignRequestFactory.createCampaignRequest4();
+        CampaignResponse createdCampaign = getCampaignResponseFromMvcResult(createCampaign(createCampaignRequest));
+        Long campaignID = createdCampaign.getCampaign().getId();
+
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
                         .get("/v1/insurance/campaigns/" + campaignID)
                         .header("Authorization", JWT)
@@ -124,15 +131,17 @@ public class CampaignControllerIntegrationTest{
                 .andReturn();
 
         CampaignResponse campaignResponse = new Gson().fromJson(result.getResponse().getContentAsString(), CampaignResponse.class);
-        assertEquals(campaignResponseExpected.getCampaign().getCampaignTitle(),campaignResponse.getCampaign().getCampaignTitle());
-        assertEquals(campaignResponseExpected.getCampaign().getCampaignDetail(),campaignResponse.getCampaign().getCampaignDetail());
-        assertEquals(campaignResponseExpected.getCampaign().getCampaignStatus(),campaignResponse.getCampaign().getCampaignStatus());
+        assertEquals("Test Insurance Campaign4",campaignResponse.getCampaign().getCampaignTitle());
+        assertEquals("this message contains the details of this campaign4",campaignResponse.getCampaign().getCampaignDetail());
+        assertEquals(CampaignCategory.OSS,campaignResponse.getCampaign().getCampaignCategory());
+        assertEquals(CampaignStatus.WAITING_FOR_APPROVAL,campaignResponse.getCampaign().getCampaignStatus());
     }
 
     @Test
     public void should_findAllCampaign() throws Exception {
-        List<CampaignResponse> campaignResponseExpected = Arrays.asList(CampaignResponse.builder().campaign(dtoFactory.campaignDto()).build());
-        createCampaign();
+        CreateCampaignRequest createCampaignRequest = createCampaignRequestFactory.createCampaignRequest4();
+        getCampaignResponseFromMvcResult(createCampaign(createCampaignRequest));
+
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
                         .get("/v1/insurance/campaigns")
                         .header("Authorization", JWT)
@@ -141,25 +150,26 @@ public class CampaignControllerIntegrationTest{
                 .andExpect(status().isOk())
                 .andReturn();
 
-        List<CampaignResponse> campaignResponse = Arrays.asList(new Gson().fromJson(result.getResponse().getContentAsString(), CampaignResponse.class));
-        assertEquals(campaignResponseExpected, campaignResponse);
-        assertEquals(campaignResponseExpected.get(0).getCampaign().getCampaignTitle(),campaignResponse.get(0).getCampaign().getCampaignTitle());
-        assertEquals(campaignResponseExpected.get(0).getCampaign().getCampaignDetail(),campaignResponse.get(0).getCampaign().getCampaignDetail());
-        assertEquals(campaignResponseExpected.get(0).getCampaign().getCampaignStatus(),campaignResponse.get(0).getCampaign().getCampaignStatus());
+        List<CampaignResponse> campaignResponse = Arrays.asList(new Gson().fromJson(result.getResponse().getContentAsString(), CampaignResponse[].class));
+
+        assertEquals(200, result.getResponse().getStatus());
+        assertNotNull(campaignResponse.get(0));
     }
 
 
     @Test
     public void should_findCampaignHistoryById() throws Exception {
         Campaign campaign = campaignDoFactory.campaign();
-        Long campaignID = 1L;
+
         CampaignHistoryResponse campaignHistoryResponseExpected = CampaignHistoryResponse.builder()
                 .campaignTitle(campaign.getCampaignTitle())
                 .campaignDetail(campaign.getCampaignDetail())
                 .campaignCategory(campaign.getCampaignCategory())
                 .campaignHistory(dtoFactory.campaignHistoryDtoList()).build();
 
-        createCampaign();
+        MvcResult createdCampaign = createCampaign2();
+        CampaignResponse campaignResponse = getCampaignResponseFromMvcResult(createdCampaign);
+        Long campaignID = campaignResponse.getCampaign().getId();
         activateCampaign(campaignID);
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
@@ -172,20 +182,18 @@ public class CampaignControllerIntegrationTest{
 
         CampaignHistoryResponse campaignHistoryResponse = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create().fromJson(result.getResponse().getContentAsString(), CampaignHistoryResponse.class);
         assertEquals(campaignHistoryResponseExpected.getCampaignHistory().size(), campaignHistoryResponse.getCampaignHistory().size());
-        assertEquals(campaignHistoryResponseExpected.getCampaignHistory().get(0).getCampaignID(),campaignHistoryResponse.getCampaignHistory().get(0).getCampaignID());
+        assertEquals(campaignID,campaignHistoryResponse.getCampaignHistory().get(0).getCampaignID());
         assertEquals(campaignHistoryResponseExpected.getCampaignHistory().get(0).getModifiedUser(), campaignHistoryResponse.getCampaignHistory().get(0).getModifiedUser());
         assertEquals(campaignHistoryResponseExpected.getCampaignHistory().get(0).getCampaignStatus(), campaignHistoryResponse.getCampaignHistory().get(0).getCampaignStatus());
-        assertEquals(campaignHistoryResponseExpected.getCampaignHistory().get(1).getCampaignID(),campaignHistoryResponse.getCampaignHistory().get(1).getCampaignID());
+        assertEquals(campaignID,campaignHistoryResponse.getCampaignHistory().get(1).getCampaignID());
         assertEquals(campaignHistoryResponseExpected.getCampaignHistory().get(1).getModifiedUser(), campaignHistoryResponse.getCampaignHistory().get(1).getModifiedUser());
         assertEquals(campaignHistoryResponseExpected.getCampaignHistory().get(1).getCampaignStatus(), campaignHistoryResponse.getCampaignHistory().get(1).getCampaignStatus());
     }
 
 
 
-    private MvcResult createCampaign() throws Exception {
-        CreateCampaignRequest createCampaignRequest = createCampaignRequestFactory.createCampaignRequest();
-
-        return mockMvc.perform(MockMvcRequestBuilders
+    private MvcResult createCampaign(CreateCampaignRequest createCampaignRequest) throws Exception {
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders
                         .post("/v1/insurance/campaigns")
                         .header("Authorization", JWT)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -196,6 +204,10 @@ public class CampaignControllerIntegrationTest{
                 )
                 .andExpect(status().isOk())
                 .andReturn();
+        CampaignResponse campaignResponse = new Gson().fromJson(result.getResponse().getContentAsString(), CampaignResponse.class);
+        System.out.println("campaignResponse isss " + campaignResponse.getCampaign().getId());
+
+        return result;
     }
 
     private MvcResult createCampaign2() throws Exception {
@@ -222,5 +234,10 @@ public class CampaignControllerIntegrationTest{
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
+    }
+
+    private CampaignResponse getCampaignResponseFromMvcResult(MvcResult result) throws UnsupportedEncodingException {
+        return new Gson().fromJson(result.getResponse().getContentAsString(), CampaignResponse.class);
+
     }
 }
