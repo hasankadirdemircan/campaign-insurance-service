@@ -72,6 +72,7 @@ $ docker run -p8080:8080 insurance-campaign-service:latest
 - H2 Database -> http://localhost:8080/h2-console
 
 H2 Info & Credentials
+![h2.png](docs%2Fh2.png)
 ```
 JDBC URL -> jdbc:h2:mem:insurance
 username -> sa
