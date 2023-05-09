@@ -14,6 +14,15 @@ public class CreateCampaignRequestFactory {
         return request;
     }
 
+    public CreateCampaignRequest createCampaignRequestActive() {
+        CreateCampaignRequest request = new CreateCampaignRequest();
+        request.setCampaignTitle("Test Active Insurance Campaign");
+        request.setCampaignDetail("this message contains the details of this campaign");
+        request.setCampaignCategory(CampaignCategory.HAYAT_INSURANCE);
+
+        return request;
+    }
+
     public CreateCampaignRequest createCampaignRequest2() {
         CreateCampaignRequest request = new CreateCampaignRequest();
         request.setCampaignTitle("Test Insurance Campaign2");

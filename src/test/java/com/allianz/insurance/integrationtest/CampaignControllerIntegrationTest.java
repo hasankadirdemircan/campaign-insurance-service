@@ -62,6 +62,18 @@ public class CampaignControllerIntegrationTest{
     }
 
     @Test
+    public void should_createCampaign_ACTIVE() throws Exception {
+        CreateCampaignRequest createCampaignRequest = createCampaignRequestFactory.createCampaignRequestActive();
+        MvcResult result = createCampaign(createCampaignRequest);
+
+        CampaignResponse campaignResponse = new Gson().fromJson(result.getResponse().getContentAsString(), CampaignResponse.class);
+        assertEquals("Test Active Insurance Campaign",campaignResponse.getCampaign().getCampaignTitle());
+        assertEquals("this message contains the details of this campaign",campaignResponse.getCampaign().getCampaignDetail());
+        assertEquals(CampaignStatus.ACTIVE,campaignResponse.getCampaign().getCampaignStatus());
+        assertEquals(CampaignCategory.HAYAT_INSURANCE,campaignResponse.getCampaign().getCampaignCategory());
+    }
+
+    @Test
     public void should_activateCampaign() throws Exception {
         CampaignResponse campaignResponseExpected = CampaignResponse.builder().campaign(dtoFactory.campaignActivatedDto()).build();
         CreateCampaignRequest createCampaignRequest = createCampaignRequestFactory.createCampaignRequest5();
