@@ -21,4 +21,6 @@ public interface CampaignService {
     CampaignHistoryResponse findCampaignHistoryById(String jwt, Long campaignID);
 
     List<CampaignStatisticsResponse> getCampaignStatistics(String jwt);
+
+    void campaignID(String jwt, Long campaignID);
 }

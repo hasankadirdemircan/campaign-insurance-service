@@ -7,13 +7,14 @@ import com.allianz.insurance.response.CampaignStatisticsResponse;
 import com.allianz.insurance.service.CampaignService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*")
 @Validated
 @RequestMapping("/v1/insurance")
 @Api(value="Insurance Campaign Management Controller", description="Operations pertaining to campaign in Insurance Management System")
@@ -31,13 +32,14 @@ public class CampaignController {
                     @ApiResponse(code = 500, message = "An unexpected error has occurred. The error has been logged and is being investigated."),
             }
     )
-    @PostMapping("/campaigns")
+    @PostMapping(value ="/campaigns" ,  consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public CampaignResponse createCampaign(
             @ApiParam(
                     value = "JWT Token" ,
                     example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJkZW1pcmNhbmhhc2Fua2FkaXJAZ21haWwuY29tIiwiaWF0IjoxNTE2MjM5MDIyfQ.gj0OOwdIFtyS3L32NQ2hSGP1c6MqZLFZbk8isg3tqpM")
             @RequestHeader(name="Authorization") String jwt,
-            @Valid CreateCampaignRequest request) {
+            @Validated @RequestBody CreateCampaignRequest request) {
         return campaignService.createCampaign(jwt, request);
     }
 
@@ -152,5 +154,24 @@ public class CampaignController {
                     example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJkZW1pcmNhbmhhc2Fua2FkaXJAZ21haWwuY29tIiwiaWF0IjoxNTE2MjM5MDIyfQ.gj0OOwdIFtyS3L32NQ2hSGP1c6MqZLFZbk8isg3tqpM")
             @RequestHeader(name="Authorization") String jwt) {
         return campaignService.getCampaignStatistics(jwt);
+    }
+
+    @ApiOperation(value = "Get All Campaign Statics", response = CampaignResponse.class)
+    @ApiResponses(
+            value = {
+                    @ApiResponse(code = 200, message = "Successful Get Campaign Statics"),
+                    @ApiResponse(code = 400, message = "The Campaign request is invalid", response = String.class),
+                    @ApiResponse(code = 404, message = "The campaign is not found"),
+                    @ApiResponse(code = 415, message = "The content type is unsupported"),
+                    @ApiResponse(code = 500, message = "An unexpected error has occurred. The error has been logged and is being investigated."),
+            }
+    )
+    @DeleteMapping("/campaigns/{campaignID}")
+    public void deleteCampaign(
+            @ApiParam(
+                    value = "JWT Token" ,
+                    example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJkZW1pcmNhbmhhc2Fua2FkaXJAZ21haWwuY29tIiwiaWF0IjoxNTE2MjM5MDIyfQ.gj0OOwdIFtyS3L32NQ2hSGP1c6MqZLFZbk8isg3tqpM")
+            @RequestHeader(name="Authorization") String jwt, @PathVariable(value = "campaignID") Long campaignID) {
+         campaignService.campaignID(jwt, campaignID);
     }
 }

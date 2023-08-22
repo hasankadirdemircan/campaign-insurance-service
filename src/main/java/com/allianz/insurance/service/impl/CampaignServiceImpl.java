@@ -25,9 +25,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -153,6 +150,11 @@ public class CampaignServiceImpl implements CampaignService {
         durationLog(start, end, "findCampaignById");
 
         return campaignStatisticsResponseList;
+    }
+
+    @Override
+    public void campaignID(String jwt, Long campaignID) {
+        campaignRepository.deleteById(campaignID);
     }
 
     private Campaign setCampaignCategory(Campaign campaign) {
